@@ -27,7 +27,8 @@
 #include "test.h"
 
 
-#define LED_TEST 1
+#define LED_TEST 	0
+#define SWITCH_TEST 1
 
 void sw_delay(void)
 {
@@ -39,9 +40,9 @@ int main(void)
 	printf("hello world\n");
 
 	/* Declare Config Structure */
-	GPIO_Handle_t led_gpio;
+	GPIO_Handle_t led_gpio,gpio_Pushbtn;
 
-	/* Initialize Config Structure */
+	/* Initialize Config Structure for LED */
 	led_gpio.pGPIO = GPIOA;
 	led_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_5;
 	led_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_OUT;
@@ -58,14 +59,52 @@ int main(void)
 	/* Init GPIO */
 	GPIO_Init(&led_gpio);
 
+	/* Initialize Config Structure for PushButon */
+	led_gpio.pGPIO = GPIOC;
+	led_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
+	led_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_IN;
+	led_gpio.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
+	led_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_NO_PUPD;
+	led_gpio.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_OPENDRAIN;
+
+	/* Enable Peripheral Clock*/
+	GPIO_Pclk_Control(GPIOC,ENABLE);
+
+	/* Init GPIO */
+	GPIO_Init(&gpio_Pushbtn);
+
 	/* Infinit Loop */
 	while(1)
 	{
+
+#if SWITCH_TEST
+		uint8_t Pbtn = 0;
+		printf(" %d \n ",GPIO_PinRead(GPIOC,GPIO_PIN_13));
+		Pbtn = GPIO_PinRead(GPIOC,GPIO_PIN_13);
+		if(Pbtn == 0)
+		{
+			sw_delay();
+			printf("Pushbutton : ON \n");
+			/* LED ON */
+			GPIO_PinWrite(GPIOA,GPIO_PIN_5,ENABLE);
+		}
+		else
+		{
+			sw_delay();
+			printf("Pushbutton : OFF \n");
+			/* LED OFF */
+			GPIO_PinWrite(GPIOA,GPIO_PIN_5,DISABLE);
+		}
+
+#endif
+
+#if LED_TEST
 		//Test_LED();
 		GPIO_PinToggle(GPIOA,GPIO_PIN_5);
 		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
 		sw_delay();
-#if 0
+		sw_delay();
+
 		/* LED ON */
 		GPIO_PinWrite(GPIOA,GPIO_PIN_5,ENABLE);
 		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
