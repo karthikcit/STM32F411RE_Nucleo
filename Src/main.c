@@ -31,7 +31,8 @@
 
 #define LED_TEST 		0
 #define SWITCH_TEST 	0
-#define BTN_INT_TEST 	1
+#define BTN_INT_TEST 	!SWITCH_TEST
+#define SAMPLE_IRQ		0
 
 #if BTN_INT_TEST
 #define GPIO_IT_PORT	GPIOC
@@ -45,14 +46,19 @@ void sw_delay(void)
 	for(uint32_t i=0;i<5000;i++);
 }
 
+#if SAMPLE_IRQ
 void EXTI15_10_IRQHandler(void)
 {
-	//sw_delay();
-	//Handle the interrupt
-	GPIO_IRQHandler(GPIO_IT_PIN);
-	USER_KEY = false;
-	//GPIO_PinToggle(GPIOA,GPIO_PIN_5);
+	GPIO_IRQHandler(GPIO_PIN_13);  //clear PR
+	GPIO_PinToggle(GPIOA, GPIO_PIN_5); //toggle led
 }
+#else
+void EXTI15_10_IRQHandler(void)
+{
+	GPIO_IRQHandler(GPIO_PIN_13);  //clear PR
+	USER_KEY = false;
+}
+#endif
 
 int main(void)
 {
@@ -82,12 +88,12 @@ int main(void)
 
 #if SWITCH_TEST
 	/* Initialize Config Structure for PushButon */
-	led_gpio.pGPIO = GPIOC;
-	led_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
-	led_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_IN;
-	led_gpio.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
-	led_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_NO_PUPD;
-	led_gpio.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_OPENDRAIN;
+	gpio_Pushbtn.pGPIO = GPIOC;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_IN;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_NO_PUPD;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_OPENDRAIN;
 
 	/* Enable Peripheral Clock*/
 	GPIO_Pclk_Control(GPIOC,ENABLE);
@@ -98,11 +104,11 @@ int main(void)
 
 #if BTN_INT_TEST
 	/* Initialize Config Structure for PushButon */
-	led_gpio.pGPIO = GPIOC;
-	led_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
-	led_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_IT_FT;
-	led_gpio.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
-	led_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_PU;
+	gpio_Pushbtn.pGPIO = GPIOC;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_IT_FT;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
+	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_PU;
 	//led_gpio.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_OPENDRAIN;
 
 	/* Enable Peripheral Clock*/
@@ -112,9 +118,8 @@ int main(void)
 	GPIO_Init(&gpio_Pushbtn);
 
 	//IRQ Configurations
+	GPIO_IRQHandler(GPIO_PIN_13); //clear pending INT
 	GPIO_IRQ_Interrupt_Config(IRQ_NO_EXTI15_10,ENABLE);
-	//while(1);
-
 
 #endif
 
@@ -123,7 +128,7 @@ int main(void)
 	while(1)
 	{
 
-#if 1
+#if BTN_INT_TEST
 		if(USER_KEY == false)
 		{
 			printf(" USER PUSHBUTTON PRESSED \n ");
@@ -131,10 +136,6 @@ int main(void)
 			USER_KEY = true;
 			GPIO_PinToggle(GPIOA,GPIO_PIN_5);
 			printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
-		}
-		if(USER_KEY == true)
-		{
-			printf(" USER PUSHBUTTON NOT PRESSED \n ");
 		}
 #endif
 

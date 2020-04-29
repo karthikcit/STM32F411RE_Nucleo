@@ -40,7 +40,7 @@ RTC_RegDef_t *pRCC = RCC;
 
 
 /* SYSCFG Peripheral Clock Enable MACROs*/
-#define SYSCFG_PCLK_EN()	(pRCC->RCC_APB2RSTR |= (SET<<14))
+#define SYSCFG_PCLK_EN()	(pRCC->RCC_APB2ENR |= (SET<<14))
 
 
 /*

@@ -116,6 +116,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		//Enable Peripheral Clock
 		SYSCFG_PCLK_EN();
 
+
 		uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIO);
 
 		SYSCFG->SYSCFG_EXTICR[temp1] |= portcode << (4*temp2);
