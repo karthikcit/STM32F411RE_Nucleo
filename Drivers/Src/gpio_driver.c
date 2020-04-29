@@ -90,7 +90,40 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 	}
 	else
 	{
-		//interrupt mode do later
+		if(pGPIOHandle->pGPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_FT )
+		{
+			//1. Configur FTSR
+			EXTI->EXTI_FTSR |= (1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+			EXTI->EXTI_RTSR &= ~(1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+		}
+		else if(pGPIOHandle->pGPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_RT)
+		{
+			//1. Configur RTSR
+			EXTI->EXTI_RTSR |= (1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+			EXTI->EXTI_FTSR &= ~(1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+		}
+		else if(pGPIOHandle->pGPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_RFT)
+		{
+			//1. Configur Both FTSR & RTSR
+			EXTI->EXTI_FTSR |= (1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+			EXTI->EXTI_RTSR |= (1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+		}
+
+		//2. Configure gpio pprt selection in SYSCFG_EXTICR
+		uint8_t temp1 = pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber /4; //to fix the EXTICR reg
+		uint8_t temp2 = pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber %4;
+
+		//Enable Peripheral Clock
+		SYSCFG_PCLK_EN();
+
+		uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIO);
+
+		SYSCFG->SYSCFG_EXTICR[temp1] |= portcode << (4*temp2);
+
+		//3. Configure exti interrupt delivery in IMR
+		EXTI->EXTI_IMR |= (1<< pGPIOHandle->pGPIO_PinConfig.GPIO_PinNumber);
+
+
 	}
 	temp = 0;
 
@@ -212,12 +245,63 @@ void GPIO_PinToggle(GPIO_RegDef_t *pGPIO,uint8_t PinNumber)
 }
 
 
-void GPIO_IRQConfig(uint8_t IRQNumber,uint8_t IRQPriority,uint8_t ENorDIS)
+void GPIO_IRQ_Interrupt_Config(uint8_t IRQNumber,uint8_t ENorDIS)
 {
+	if(ENorDIS == ENABLE)
+	{
+		if(IRQNumber < 32)
+		{
+			*NVIC_ISER0 = 1<<IRQNumber;
+		}
+		else if((IRQNumber >= 32) && (IRQNumber < 64))
+		{
+			*NVIC_ISER1 = 1<<(IRQNumber%32);
+		}
+		else if((IRQNumber >= 64) && (IRQNumber < 96))
+		{
+			*NVIC_ISER2 = 1<<(IRQNumber%64);
+		}
+		//STM32F411RE controller has interrupt numbers till 85 so configuring upto ISER2 is enough
+	}
+	else if(ENorDIS == DISABLE)
+	{
+		if(IRQNumber < 32)
+		{
+			*NVIC_ICER0 = 1<<IRQNumber;
+		}
+		else if((IRQNumber >= 32) && (IRQNumber < 64))
+		{
+			*NVIC_ICER1 = 1<<(IRQNumber%32);
+		}
+		else if((IRQNumber >= 64) && (IRQNumber < 96))
+		{
+			*NVIC_ICER2 = 1<<(IRQNumber%64);
+		}
+		//STM32F411RE controller has interrupt numbers till 85 so configuring upto ICER2 is enough
+	}
 
 }
 
-void GPIO_IRQHandler(uint8_t PinNumbers)
+
+void GPIO_IRQ_ITPriority(uint8_t IRQNumber,uint32_t IRQPriority)
 {
+	uint8_t iprx = IRQNumber / 4;  //to select the register
+	uint8_t iprx_selectiom = IRQNumber % 4; //to select the Byte in the selected register
+
+	//To shift in proper place since NO_OF_PRIORITYBITS_IMPLEMENTED differs controller to controller
+	uint8_t Shift_Val = (8 *  iprx_selectiom) + (8 - NO_OF_PRIORITYBITS_IMPLEMENTED);
+
+	*(NVIC_PR_BASE_ADDR + iprx) |= IRQPriority << Shift_Val ;
 
 }
+
+void GPIO_IRQHandler(uint8_t PinNumber)
+{
+	//Clear the EXTI PR reg  corresponding to the pin number
+	if(EXTI->EXTI_PR & (1<<PinNumber))
+	{
+		EXTI->EXTI_PR |= 1<<PinNumber;
+	}
+
+}
+

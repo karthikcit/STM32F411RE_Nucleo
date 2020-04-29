@@ -88,6 +88,9 @@ typedef struct
 #define GPIO_PINMODE_OUT		1
 #define GPIO_PINMODE_ALTFN		2
 #define GPIO_PINMODE_AN			3
+#define GPIO_PINMODE_IT_FT		4
+#define GPIO_PINMODE_IT_RT		5
+#define GPIO_PINMODE_IT_RFT		6
 
 #define GPIO_OUTSPEED_LOW		0
 #define GPIO_OUTSPEED_MED		1
@@ -129,6 +132,7 @@ void GPIO_PinToggle_ByRead(GPIO_RegDef_t *pGPIO,uint8_t PinNumber);
 void GPIO_PinToggle(GPIO_RegDef_t *pGPIO,uint8_t PinNumber);
 
 
-void GPIO_IRQConfig(uint8_t IRQNumber,uint8_t IRQPriority,uint8_t ENorDIS);
+void GPIO_IRQ_Interrupt_Config(uint8_t IRQNumber,uint8_t ENorDIS);
+void GPIO_IRQ_ITPriority(uint8_t IRQNumber,uint32_t IRQPriority);
 void GPIO_IRQHandler(uint8_t PinNumbers);
 #endif /* INC_GPIO_DRIVER_H_ */

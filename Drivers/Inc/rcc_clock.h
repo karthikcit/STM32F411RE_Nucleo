@@ -13,6 +13,8 @@
 
 RTC_RegDef_t *pRCC = RCC;
 
+
+/* GPIOx Peripheral Clock Enable MACROs*/
 #define GPIOA_PCLK_EN()	(pRCC->RCC_AHB1ENR |= (SET<<0))
 #define GPIOB_PCLK_EN()	(pRCC->RCC_AHB1ENR |= (SET<<1))
 #define GPIOC_PCLK_EN()	(pRCC->RCC_AHB1ENR |= (SET<<2))
@@ -20,6 +22,7 @@ RTC_RegDef_t *pRCC = RCC;
 #define GPIOE_PCLK_EN()	(pRCC->RCC_AHB1ENR |= (SET<<4))
 #define GPIOH_PCLK_EN()	(pRCC->RCC_AHB1ENR |= (SET<<7))
 
+/* GPIOx Peripheral Clock Disable MACROs*/
 #define GPIOA_PCLK_DIS()	(pRCC->RCC_AHB1ENR &= (RESET<<0))
 #define GPIOB_PCLK_DIS()	(pRCC->RCC_AHB1ENR &= (RESET<<1))
 #define GPIOC_PCLK_DIS()	(pRCC->RCC_AHB1ENR &= (RESET<<2))
@@ -27,13 +30,19 @@ RTC_RegDef_t *pRCC = RCC;
 #define GPIOE_PCLK_DIS()	(pRCC->RCC_AHB1ENR &= (RESET<<4))
 #define GPIOH_PCLK_DIS()	(pRCC->RCC_AHB1ENR &= (RESET<<7))
 
-
+/* GPIOx Peripheral Clock Reset MACROs*/
 #define GPIOA_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<0);}while(0)   //dont add ; at the end here
 #define GPIOB_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<1);}while(0)
 #define GPIOC_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<2);}while(0)
 #define GPIOD_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<3);}while(0)
 #define GPIOE_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<4);}while(0)
 #define GPIOH_REG_RESET()	do{pRCC->RCC_AHB1RSTR |= SET<<0; pRCC->RCC_AHB1RSTR &= ~(SET<<7);}while(0)
+
+
+/* SYSCFG Peripheral Clock Enable MACROs*/
+#define SYSCFG_PCLK_EN()	(pRCC->RCC_APB2RSTR |= (SET<<14))
+
+
 /*
 void GPIOA_Pclk_Enable(void)
 {

@@ -10,6 +10,30 @@
 
 #include <stdint.h>
 
+/* Processor Specific info for ARM Cortex Mx  NVIC ISER Registers */
+#define NVIC_ISER0	((volatile uint32_t*)0xE000E100)
+#define NVIC_ISER1	((volatile uint32_t*)0xE000E104)
+#define NVIC_ISER2	((volatile uint32_t*)0xE000E108)
+#define NVIC_ISER3	((volatile uint32_t*)0xE000E10C)
+#define NVIC_ISER4	((volatile uint32_t*)0xE000E110)
+#define NVIC_ISER5	((volatile uint32_t*)0xE000E114)
+#define NVIC_ISER6	((volatile uint32_t*)0xE000E118)
+#define NVIC_ISER7	((volatile uint32_t*)0xE000E11c)
+
+/* Processor Specific info for ARM Cortex Mx  NVIC ICER Registers */
+#define NVIC_ICER0	((volatile uint32_t*)0xE000E180)
+#define NVIC_ICER1	((volatile uint32_t*)0xE000E184)
+#define NVIC_ICER2	((volatile uint32_t*)0xE000E188)
+#define NVIC_ICER3	((volatile uint32_t*)0xE000E18C)
+#define NVIC_ICER4	((volatile uint32_t*)0xE000E190)
+#define NVIC_ICER5	((volatile uint32_t*)0xE000E194)
+#define NVIC_ICER6	((volatile uint32_t*)0xE000E198)
+#define NVIC_ICER7	((volatile uint32_t*)0xE000E19c)
+
+/* Processor Specific info for ARM Cortex Mx  NVIC Priority Registers */
+#define NVIC_PR_BASE_ADDR ((volatile uint32_t*)0xE000E400)
+
+#define NO_OF_PRIORITYBITS_IMPLEMENTED 4
 
 /*  MACROs for MCU Memories FLASH,SRAM */
 #define SRAM1_BASE_ADDR	0X20000000U
@@ -57,7 +81,7 @@
 #define SPI1_I2S1_BASEADDR	(APB2PERIPH_BASE+0X3000u)
 #define SPI4_I2S4_BASEADDR	(APB2PERIPH_BASE+0X3400u)
 #define SYSCFG_BASEADDR	(APB2PERIPH_BASE+0X3800u)
-#define EXT1_BASEADDR	(APB2PERIPH_BASE+0X3C00u)
+#define EXTI_BASEADDR	(APB2PERIPH_BASE+0X3C00u)
 #define TIM9_BASEADDR	(APB2PERIPH_BASE+0X4000u)
 #define TIM10_BASEADDR	(APB2PERIPH_BASE+0X4400u)
 #define TIM11_BASEADDR	(APB2PERIPH_BASE+0X4800u)
@@ -155,8 +179,54 @@ typedef struct
 #define RCC ((RTC_RegDef_t*)(RCC_BASEADDR))
 
 
+/* Peripheral Register Definition Structure for EXTI */
+typedef struct
+{
+	volatile uint32_t EXTI_IMR;   /* Offset 0x00 */
+	volatile uint32_t EXTI_EMR;   /* Offset 0x04 */
+	volatile uint32_t EXTI_RTSR;   /* Offset 0x08 */
+	volatile uint32_t EXTI_FTSR;   /* Offset 0x0C */
+	volatile uint32_t EXTI_SWIER;   /* Offset 0x10 */
+	volatile uint32_t EXTI_PR;   /* Offset 0x14 */
+
+}EXTI_RegDef_t;
+
+/* MACROs for EXTI (peripheral base addr typecasted to regdef structures) */
+#define EXTI ((EXTI_RegDef_t*)(EXTI_BASEADDR))
+
+/* Peripheral Register Definition Structure for syscfg */
+typedef struct
+{
+	volatile uint32_t SYSCFG_MEMRMP;    /* Offset 0x00 */
+	volatile uint32_t SYSCFG_PMC;	    /* Offset 0x04 */
+//	volatile uint32_t SYSCFG_EXTICR1;   /* Offset 0x08 */
+//	volatile uint32_t SYSCFG_EXTICR2;   /* Offset 0x0C */
+//	volatile uint32_t SYSCFG_EXTICR3;   /* Offset 0x10 */
+//	volatile uint32_t SYSCFG_EXTICR4;  	/* Offset 0x14 */
+	volatile uint32_t SYSCFG_EXTICR[4];
+	volatile uint32_t Reserved1;		/* Offset 0x18 */
+	volatile uint32_t Reserved2;		/* Offset 0x1C */
+	volatile uint32_t SYSCFG_CMPCR; 	/* Offset 0x20 */
+}SYSCFG_RegDef_t;
+
+/* MACROs for EXTI (peripheral base addr typecasted to regdef structures) */
+#define SYSCFG ((SYSCFG_RegDef_t*)(SYSCFG_BASEADDR))
+
+#define GPIO_BASEADDR_TO_CODE(x)	((x==GPIOA) ? 0 :\
+									 (x==GPIOB) ? 1 :\
+									 (x==GPIOC) ? 2 :\
+									 (x==GPIOD) ? 3 :\
+									 (x==GPIOE) ? 4 :\
+									 (x==GPIOA) ? 7 :0)
 
 
+#define IRQ_NO_EXTI0		6	//exti line 0
+#define IRQ_NO_EXTI1		7	//exti line 1
+#define IRQ_NO_EXTI2		8	//exti line 2
+#define IRQ_NO_EXTI3		9	//exti line 3
+#define IRQ_NO_EXTI4		10	//exti line 4
+#define IRQ_NO_EXTI9_5		23	//exti lines 5 - 9
+#define IRQ_NO_EXTI15_10	40  //exti lines 10 - 15
 
 
 /* RCC Clock Enable MACROS */
