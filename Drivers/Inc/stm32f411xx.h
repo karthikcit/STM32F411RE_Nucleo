@@ -134,7 +134,7 @@ typedef struct
 #define GPIOH ((GPIO_RegDef_t*)GPIOH_BASEADDR)
 
 
-/* Peripheral Register Definition Structure for RTC */
+/* Peripheral Register Definition Structure for RCC */
 typedef struct
 	{
 		volatile uint32_t RCC_CR;     		/* offset 0x00 */
@@ -173,10 +173,10 @@ typedef struct
 		volatile uint32_t RCC_PLLI2SCFGR;	/*	0x84 */
 		volatile uint32_t Reserved15;		/*	0x88 */
 		volatile uint32_t RCC_DCKCFGR;		/*	0x8C */
-	}RTC_RegDef_t;
+	}RCC_RegDef_t;
 
 /* MACROs for RCC (peripheral base addr typecasted to regdef structures) */
-#define RCC ((RTC_RegDef_t*)(RCC_BASEADDR))
+#define RCC ((RCC_RegDef_t*)(RCC_BASEADDR))
 
 
 /* Peripheral Register Definition Structure for EXTI */
@@ -228,25 +228,27 @@ typedef struct
 #define IRQ_NO_EXTI9_5		23	//exti lines 5 - 9
 #define IRQ_NO_EXTI15_10	40  //exti lines 10 - 15
 
+/* Peripheral Register Definition Structure for SPI */
+typedef struct
+{
+	volatile uint32_t SPI_CR1;		/* Offset 0x00 */
+	volatile uint32_t SPI_CR2;		/* Offset 0x04 */
+	volatile uint32_t SPI_SR;		/* Offset 0x08 */
+	volatile uint32_t SPI_DR;		/* Offset 0x0C */
+	volatile uint32_t SPI_CRCPR;	/* Offset 0x10 */
+	volatile uint32_t SPI_RXCRCR;	/* Offset 0x14 */
+	volatile uint32_t SPI_TXCRCR; 	/* Offset 0x18 */
+	volatile uint32_t SPI_I2SCFGR;	/* Offset 0x1c */
+	volatile uint32_t SPI_I2SPR;	/* Offset 0x20 */
+}SPI_RegDef_t;
 
-/* RCC Clock Enable MACROS */
-/*
-#define GPIOA_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<0));
-#define GPIOB_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<1))
-#define GPIOC_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<2))
-#define GPIOD_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<3))
-#define GPIOE_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<4))
-#define GPIOH_PCLK_EN()	(RCC->RCC_APB1ENR |= (1<<7))
-*/
-/* RCC Clock Disable MACROS */
-/*
-#define GPIOA_PCLK_DIS()	(pRCC->RCC_APB1ENR &= (0<<0))
-#define GPIOB_PCLK_DIS()	(RCC->RCC_APB1ENR &= (0<<1))
-#define GPIOC_PCLK_DIS()	(RCC->RCC_APB1ENR &= (0<<2))
-#define GPIOD_PCLK_DIS()	(RCC->RCC_APB1ENR &= (0<<3))
-#define GPIOE_PCLK_DIS()	(RCC->RCC_APB1ENR &= (0<<4))
-#define GPIOH_PCLK_DIS()	(RCC->RCC_APB1ENR &= (0<<7))
-*/
+/* MACROs for SPI (peripheral base addr typecasted to regdef structures) */
+#define SPI1 ((SPI_RegDef_t*)(SPI1_I2S1_BASEADDR))
+#define SPI2 ((SPI_RegDef_t*)(SPI2_I2S2_BASEADDR))
+#define SPI3 ((SPI_RegDef_t*)(SPI3_I2S3_BASEADDR))
+#define SPI4 ((SPI_RegDef_t*)(SPI4_I2S4_BASEADDR))
+#define SPI5 ((SPI_RegDef_t*)(SPI5_I2S5_BASEADDR))
+
 
 /* Generic MACROs */
 #define ENABLE			1
@@ -255,5 +257,7 @@ typedef struct
 #define RESET			DISABLE
 #define GPIO_PIN_SET 	SET
 #define GPIO_PIN_RESET 	RESET
+
+
 
 #endif /* INC_STM32F411XX_H_ */

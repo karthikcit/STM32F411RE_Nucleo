@@ -11,7 +11,7 @@
 #include "stm32f411xx.h"
 
 
-RTC_RegDef_t *pRCC = RCC;
+RCC_RegDef_t *pRCC = RCC;
 
 
 /* GPIOx Peripheral Clock Enable MACROs*/
@@ -42,6 +42,20 @@ RTC_RegDef_t *pRCC = RCC;
 /* SYSCFG Peripheral Clock Enable MACROs*/
 #define SYSCFG_PCLK_EN()	(pRCC->RCC_APB2ENR |= (SET<<14))
 
+
+/* SPI Peripheral Clock Enable MACROs*/
+#define SPI1_PCLK_EN()	(pRCC->RCC_APB2ENR |= (SET<<12))
+#define SPI2_PCLK_EN()	(pRCC->RCC_APB1ENR |= (SET<<14))
+#define SPI3_PCLK_EN()	(pRCC->RCC_APB1ENR |= (SET<<15))
+#define SPI4_PCLK_EN()	(pRCC->RCC_APB2ENR |= (SET<<13))
+#define SPI5_PCLK_EN()	(pRCC->RCC_APB2ENR |= (SET<<20))
+
+/* SPI Peripheral Clock Disable MACROs*/
+#define SPI1_PCLK_DIS()	(pRCC->RCC_APB2ENR &= (RESET<<12))
+#define SPI2_PCLK_DIS()	(pRCC->RCC_APB1ENR &= (RESET<<14))
+#define SPI3_PCLK_DIS()	(pRCC->RCC_APB1ENR &= (RESET<<15))
+#define SPI4_PCLK_DIS()	(pRCC->RCC_APB2ENR &= (RESET<<13))
+#define SPI5_PCLK_DIS()	(pRCC->RCC_APB2ENR &= (RESET<<20))
 
 /*
 void GPIOA_Pclk_Enable(void)
