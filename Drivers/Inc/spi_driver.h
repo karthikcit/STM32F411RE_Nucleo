@@ -26,10 +26,49 @@ typedef struct
 /* Create SPI Handle Structure */
 typedef struct
 {
-	//GPIOA_RegDef_t *pGPIOA = (GPIOA_RegDef_t*)GPIOA_BASEADDR;  //specific
 	SPI_RegDef_t *pSPI;  /* common */
 	SPI_PinConfig_t pSPI_PinConfig;
 }SPI_Handle_t;
+
+/*  MACROs for SPI_DeviceMode */
+#define SPI_DEV_MODE_MASTER 1
+#define SPI_DEV_MODE_SLAVE  0
+
+/*  MACROs for SPI_BusConfig */
+#define SPI_BIDIMODE_UNIDIR	0	//2-line unidirectional data mode selected
+#define SPI_BIDIMODE_BIDIR	1	// 1-line bidirectional data mode selected
+#define SPI_BIDIOE_DISABLE	0	//Output disabled (receive-only mode)
+#define SPI_BIDIOE_ENABLE	1	//Output enabled (transmit-only mode)
+
+/*  MACROs for SPI_ClkSpeed */
+
+/*  MACROs for SPI_DFF */
+#define SPI_DFF_8BIT	0	//8-bit data frame format
+#define SPI_DFF_16BIT	1	//16-bit data frame format
+
+/*  MACROs for SPI_SSM */
+#define SPI_SSM_DIS	0	//Software slave management disabled
+#define SPI_SSM_ENA 1	//Software slave management enabled
+
+#define SPI_RXONLY_FULLDUPLEX	0	//Full duplex (Transmit and receive)
+#define SPI_RXONLY_OPDISABLED	1	//Output disabled (Receive-only mode)
+
+/*  SPI Perpheral Enable */
+#define SPI_ENABLE		1
+#define SPI_DISABLE		0
+
+/* BAUD RATE CONTROL */
+/* SPI MASTER Selection  */
+#define SPI_SLAVE	0
+#define SPI_MASTER	1
+
+/*  MACROs for SPI_CPOl */
+#define SPI_CPOL_ZERO	0
+#define SPI_CPOLONE		1
+
+/*  MACROs for SPI_CPHA */
+#define SPI_CPHA_ZERO	0	//The first clock transition is the first data capture edge
+#define SPI_CPHA_ONE	1	//The second clock transition is the first data capture edge
 
 
 void SPI_Pclk_Control(SPI_RegDef_t *pSPI,uint8_t ENorDIS);
