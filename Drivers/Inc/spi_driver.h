@@ -35,12 +35,25 @@ typedef struct
 #define SPI_DEV_MODE_SLAVE  0
 
 /*  MACROs for SPI_BusConfig */
-#define SPI_BIDIMODE_UNIDIR	0	//2-line unidirectional data mode selected
-#define SPI_BIDIMODE_BIDIR	1	// 1-line bidirectional data mode selected
-#define SPI_BIDIOE_DISABLE	0	//Output disabled (receive-only mode)
-#define SPI_BIDIOE_ENABLE	1	//Output enabled (transmit-only mode)
+#define SPI_BCFG_FD			1	//2-line unidirectional data mode selected
+#define SPI_BCFG_HD			2	// 1-line bidirectional data mode selected
+#define SPI_BCFG_SIMPLEX_RX	3	//SIMPLEX MODE (receive-only mode)
+//#define SPI_BCFG_SIMPLEX_TX	4	//Output enabled (transmit-only mode)  NOT VALID
+//below lines rep simplex mode not needed since mode added in SPI_BCFG_SIMPLEX_RX macro
+//#define SPI_RXONLY_FULLDUPLEX	0	//Full duplex (Transmit and receive)
+//#define SPI_RXONLY_OPDISABLED	1	//Output disabled (Receive-only mode)
+
+
 
 /*  MACROs for SPI_ClkSpeed */
+#define SPI_PCLK_DIV2		0
+#define SPI_PCLK_DIV4		1
+#define SPI_PCLK_DIV8		2
+#define SPI_PCLK_DIV16		3
+#define SPI_PCLK_DIV32		4
+#define SPI_PCLK_DIV64		5
+#define SPI_PCLK_DIV128		6
+#define SPI_PCLK_DIV256		7
 
 /*  MACROs for SPI_DFF */
 #define SPI_DFF_8BIT	0	//8-bit data frame format
@@ -50,8 +63,6 @@ typedef struct
 #define SPI_SSM_DIS	0	//Software slave management disabled
 #define SPI_SSM_ENA 1	//Software slave management enabled
 
-#define SPI_RXONLY_FULLDUPLEX	0	//Full duplex (Transmit and receive)
-#define SPI_RXONLY_OPDISABLED	1	//Output disabled (Receive-only mode)
 
 /*  SPI Perpheral Enable */
 #define SPI_ENABLE		1
@@ -69,6 +80,24 @@ typedef struct
 /*  MACROs for SPI_CPHA */
 #define SPI_CPHA_ZERO	0	//The first clock transition is the first data capture edge
 #define SPI_CPHA_ONE	1	//The second clock transition is the first data capture edge
+
+
+/* Register Bit Field MACROs */
+#define SPI_CR1_CPHA_BPOS		0
+#define SPI_CR1_CPOL_BPOS		1
+#define SPI_CR1_MSTR_BPOS		2
+#define SPI_CR1_BR_BPOS			3 //3,4,5
+#define SPI_CR1_SPE_BPOS		6
+#define SPI_CR1_LSBFIRST_BPOS	7
+#define SPI_CR1_SSI_BPOS		8
+#define SPI_CR1_SSM_BPOS		9
+#define SPI_CR1_RX_ONLY_BPOS	10
+#define SPI_CR1_DFF_BPOS		11
+#define SPI_CR1_CRC_NEXT_BPOS	12
+#define SPI_CR1_CRC_EN_BPOS		13
+#define SPI_CR1_BIDI_OE_BPOS	14
+#define SPI_CR1_BIDI_MODE_BPOS	15
+
 
 
 void SPI_Pclk_Control(SPI_RegDef_t *pSPI,uint8_t ENorDIS);

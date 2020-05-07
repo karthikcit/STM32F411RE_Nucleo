@@ -175,27 +175,27 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIO)
 	//if(pGPIOHandle->pGPIO == GPIOA)
 	if(pGPIO == GPIOA)
 	{
-		GPIOA_PCLK_EN();
+		GPIOA_PCLK_DIS();
 	}
 	else if(pGPIO == GPIOB)
 	{
-		GPIOB_PCLK_EN();
+		GPIOB_PCLK_DIS();
 	}
 	else if(pGPIO == GPIOC)
 	{
-		GPIOC_PCLK_EN();
+		GPIOC_PCLK_DIS();
 	}
 	else if(pGPIO == GPIOD)
 	{
-		GPIOD_PCLK_EN();
+		GPIOD_PCLK_DIS();
 	}
 	else if(pGPIO == GPIOE)
 	{
-		GPIOE_PCLK_EN();
+		GPIOE_PCLK_DIS();
 	}
 	else if(pGPIO == GPIOH)
 	{
-		GPIOH_PCLK_EN();
+		GPIOH_PCLK_DIS();
 	}
 }
 

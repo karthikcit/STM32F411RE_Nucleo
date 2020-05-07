@@ -28,10 +28,17 @@
 #include "gpio_driver.h"
 #include "test.h"
 
+/* Init MACROs */
+#define LED_INIT		0
+#define SWITCH_INIT		0
+#define BTN_INIT		0
+#define SPI_INIT		1
 
 #define LED_TEST 		0
 #define SWITCH_TEST 	0
-#define BTN_INT_TEST 	!SWITCH_TEST
+#define BTN_INT_TEST 	0 //!SWITCH_TEST
+#define SPI_TEST		1
+
 #define SAMPLE_IRQ		0
 
 #if BTN_INT_TEST
@@ -52,7 +59,9 @@ void EXTI15_10_IRQHandler(void)
 	GPIO_IRQHandler(GPIO_PIN_13);  //clear PR
 	GPIO_PinToggle(GPIOA, GPIO_PIN_5); //toggle led
 }
-#else
+#endif
+
+#if BTN_INT_TEST
 void EXTI15_10_IRQHandler(void)
 {
 	GPIO_IRQHandler(GPIO_PIN_13);  //clear PR
@@ -69,6 +78,7 @@ int main(void)
 	memset(&led_gpio,0,sizeof(led_gpio));
 	memset(&gpio_Pushbtn,0,sizeof(gpio_Pushbtn));
 
+#if LED_INIT
 	/* Initialize Config Structure for LED */
 	led_gpio.pGPIO = GPIOA;
 	led_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_5;
@@ -85,8 +95,9 @@ int main(void)
 
 	/* Init GPIO */
 	GPIO_Init(&led_gpio);
+#endif
 
-#if SWITCH_TEST
+#if SWITCH_INIT
 	/* Initialize Config Structure for PushButon */
 	gpio_Pushbtn.pGPIO = GPIOC;
 	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
@@ -102,7 +113,7 @@ int main(void)
 	GPIO_Init(&gpio_Pushbtn);
 #endif
 
-#if BTN_INT_TEST
+#if BTN_INIT
 	/* Initialize Config Structure for PushButon */
 	gpio_Pushbtn.pGPIO = GPIOC;
 	gpio_Pushbtn.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
@@ -123,20 +134,36 @@ int main(void)
 
 #endif
 
+#if SPI_INIT
+	//SPI 2 as master
+
+#endif
+
 
 	/* Infinit Loop */
 	while(1)
 	{
 
-#if BTN_INT_TEST
-		if(USER_KEY == false)
-		{
-			printf(" USER PUSHBUTTON PRESSED \n ");
-			printf(" %d \n ",GPIO_PinRead(GPIOC,GPIO_PIN_13));
-			USER_KEY = true;
-			GPIO_PinToggle(GPIOA,GPIO_PIN_5);
-			printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
-		}
+#if 1//spi test
+
+#endif
+
+#if LED_TEST
+		//Test_LED();
+		GPIO_PinToggle(GPIOA,GPIO_PIN_5);
+		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
+		sw_delay();
+		sw_delay();
+
+		/* LED ON */
+		GPIO_PinWrite(GPIOA,GPIO_PIN_5,ENABLE);
+		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
+		sw_delay();
+
+		/* LED OFF */
+		GPIO_PinWrite(GPIOA,GPIO_PIN_5,DISABLE);
+		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
+		sw_delay();
 #endif
 
 #if SWITCH_TEST
@@ -160,22 +187,15 @@ int main(void)
 
 #endif
 
-#if LED_TEST
-		//Test_LED();
-		GPIO_PinToggle(GPIOA,GPIO_PIN_5);
-		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
-		sw_delay();
-		sw_delay();
-
-		/* LED ON */
-		GPIO_PinWrite(GPIOA,GPIO_PIN_5,ENABLE);
-		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
-		sw_delay();
-
-		/* LED OFF */
-		GPIO_PinWrite(GPIOA,GPIO_PIN_5,DISABLE);
-		printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
-		sw_delay();
+#if BTN_INT_TEST
+		if(USER_KEY == false)
+		{
+			printf(" USER PUSHBUTTON PRESSED \n ");
+			printf(" %d \n ",GPIO_PinRead(GPIOC,GPIO_PIN_13));
+			USER_KEY = true;
+			GPIO_PinToggle(GPIOA,GPIO_PIN_5);
+			printf(" %d \n ",GPIO_PinRead(GPIOA,GPIO_PIN_5));
+		}
 #endif
 
 	}//end of while(1)
