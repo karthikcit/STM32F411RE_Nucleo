@@ -4,9 +4,7 @@
  *  Created on: 18-Apr-2020
  *      Author: KarthikM
  */
-#include "stm32f411xx.h"
 #include "gpio_driver.h"
-#include "rcc_clock.h"
 
 /*
  * Function: GPIO_Pclk_Control

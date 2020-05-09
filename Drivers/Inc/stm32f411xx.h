@@ -259,5 +259,7 @@ typedef struct
 #define GPIO_PIN_RESET 	RESET
 
 
+#include "rcc_clock.h"
+
 
 #endif /* INC_STM32F411XX_H_ */

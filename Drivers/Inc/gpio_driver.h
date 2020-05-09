@@ -9,6 +9,7 @@
 #define INC_GPIO_DRIVER_H_
 
 #include "stm32f411xx.h"
+#include "rcc_clock.h"
 
 typedef struct
 {

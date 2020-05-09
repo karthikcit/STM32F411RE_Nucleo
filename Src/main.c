@@ -26,6 +26,7 @@
 #include "string.h"
 #include "stm32f411xx.h"
 #include "gpio_driver.h"
+#include "spi_driver.h"
 #include "test.h"
 
 /* Init MACROs */
@@ -69,6 +70,63 @@ void EXTI15_10_IRQHandler(void)
 }
 #endif
 
+
+void SPI2GPIO_Init()
+{
+	GPIO_Handle_t SPI2_gpio;
+	memset(&SPI2_gpio,0,sizeof(SPI2_gpio));
+
+	SPI2_gpio.pGPIO = GPIOB;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_ALTFN;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinAltFunMode = 5;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_NO_PUPD;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_PUSHPULL;
+
+	/* Enable Peripheral Clock*/
+	GPIO_Pclk_Control(GPIOB,ENABLE);
+	//Slave Select Pin
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_12;
+	/* Init GPIO */
+	GPIO_Init(&SPI2_gpio);
+
+	//Sclk Pin
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_13;
+	/* Init GPIO */
+	GPIO_Init(&SPI2_gpio);
+	//MISO
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_14;
+	/* Init GPIO */
+	GPIO_Init(&SPI2_gpio);
+	//MOSI
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_15;
+	/* Init GPIO */
+	GPIO_Init(&SPI2_gpio);
+
+}
+
+void SPI2_Init()
+{
+	SPI_Handle_t peri_spi2;
+	memset(&peri_spi2,0,sizeof(peri_spi2));
+
+	//SPI 2 as master
+	peri_spi2.pSPI_PinConfig.SPI_BusConfig = SPI_BCFG_FD;
+	peri_spi2.pSPI_PinConfig.SPI_DeviceMode = SPI_DEV_MODE_MASTER;
+	peri_spi2.pSPI_PinConfig.SPI_ClkSpeed = SPI_PCLK_DIV2;  //Fclk/2
+	peri_spi2.pSPI_PinConfig.SPI_DFF = SPI_DFF_8BIT;
+	peri_spi2.pSPI_PinConfig.SPI_SSM = SPI_SSM_ENA;
+	peri_spi2.pSPI_PinConfig.SPI_CPHA = SPI_CPHA_ZERO;
+	peri_spi2.pSPI_PinConfig.SPI_CPOL = SPI_CPOL_ZERO;
+
+	//enable pclk
+	SPI_Pclk_Control(SPI2,ENABLE);
+
+	//INIT SPI
+	SPI_Init(&peri_spi2);
+
+}
+
 int main(void)
 {
 	printf("hello world\n");
@@ -77,6 +135,7 @@ int main(void)
 	GPIO_Handle_t led_gpio,gpio_Pushbtn;
 	memset(&led_gpio,0,sizeof(led_gpio));
 	memset(&gpio_Pushbtn,0,sizeof(gpio_Pushbtn));
+
 
 #if LED_INIT
 	/* Initialize Config Structure for LED */
@@ -135,18 +194,21 @@ int main(void)
 #endif
 
 #if SPI_INIT
-	//SPI 2 as master
+	SPI2GPIO_Init();
+	SPI2_Init();
+#endif
+
+#if SPI_TEST
+	char test_str[] = "hello world";
+	SPI_DataSend(SPI2,(uint8_t*)test_str,strlen(test_str));
+	while(1);
 
 #endif
 
-
+#if 0
 	/* Infinit Loop */
 	while(1)
 	{
-
-#if 1//spi test
-
-#endif
 
 #if LED_TEST
 		//Test_LED();
@@ -199,6 +261,7 @@ int main(void)
 #endif
 
 	}//end of while(1)
+#endif//disable While(1) infiniite loop
 
 	return 0;
 }//end of main

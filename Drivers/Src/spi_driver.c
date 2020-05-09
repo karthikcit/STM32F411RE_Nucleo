@@ -7,8 +7,6 @@
 
 
 #include "spi_driver.h"
-//#include "rcc_clock.h"
-
 
 
 void SPI_Pclk_Control(SPI_RegDef_t *pSPI,uint8_t ENorDIS)
@@ -66,10 +64,16 @@ void SPI_Enable(SPI_Handle_t *pSPIHandle)
 	pSPIHandle->pSPI->SPI_CR1 |= (SET << SPI_CR1_SPE_BPOS);
 }
 
+void SPI_Disable(SPI_Handle_t *pSPIHandle)
+{
+	pSPIHandle->pSPI->SPI_CR1 &= ~(SET << SPI_CR1_SPE_BPOS);
+}
 
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
 	uint32_t tempreg_val=0;
+
+	SPI_Disable(pSPIHandle);
 
 	tempreg_val |= pSPIHandle->pSPI_PinConfig.SPI_CPHA << SPI_CR1_CPHA_BPOS;  //clk phase
 	tempreg_val |= pSPIHandle->pSPI_PinConfig.SPI_CPOL << SPI_CR1_CPOL_BPOS;	//clk polarity
@@ -128,7 +132,7 @@ void SPI_DataSend(SPI_RegDef_t *pSPI,uint8_t *pTx_Buff,uint32_t Len)
 		//1. check TXE flag to set
 		while(!(pSPI->SPI_SR & (1<<1)));
 		//2. check frame formate
-		if(pSPI->SPI_CR1 & (1<<SPI_CR1_DFF_BPOS)  == SPI_DFF_8BIT)
+		if(((pSPI->SPI_CR1) & (1<<SPI_CR1_DFF_BPOS))  == SPI_DFF_8BIT)
 		{
 			//3. put data in DR
 			pSPI->SPI_DR = *(pTx_Buff);
@@ -138,7 +142,7 @@ void SPI_DataSend(SPI_RegDef_t *pSPI,uint8_t *pTx_Buff,uint32_t Len)
 			Len--;
 
 		}
-		else if(pSPI->SPI_CR1 & (1<<SPI_CR1_DFF_BPOS)  == SPI_DFF_16BIT)
+		else if((pSPI->SPI_CR1 & (1<<SPI_CR1_DFF_BPOS))  == SPI_DFF_16BIT)
 		{
 			//3. put data in DR
 			pSPI->SPI_DR = *((uint16_t*)pTx_Buff);
