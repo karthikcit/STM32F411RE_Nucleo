@@ -59,14 +59,19 @@ void SPI_Pclk_Control(SPI_RegDef_t *pSPI,uint8_t ENorDIS)
 	}
 }
 
-void SPI_Enable(SPI_Handle_t *pSPIHandle)
+void SPI_Enable(SPI_RegDef_t *pSPI)
 {
-	pSPIHandle->pSPI->SPI_CR1 |= (SET << SPI_CR1_SPE_BPOS);
+	pSPI->SPI_CR1 |= (SET << SPI_CR1_SPE_BPOS);
 }
 
-void SPI_Disable(SPI_Handle_t *pSPIHandle)
+void SPI_Disable(SPI_RegDef_t *pSPI)
 {
-	pSPIHandle->pSPI->SPI_CR1 &= ~(SET << SPI_CR1_SPE_BPOS);
+	pSPI->SPI_CR1 &= ~(SET << SPI_CR1_SPE_BPOS);
+}
+
+void SPI_SSI_SET(SPI_RegDef_t *pSPI)
+{
+	pSPI->SPI_CR1 |= SET << SPI_CR1_SSI_BPOS;
 }
 
 void SPI_Init(SPI_Handle_t *pSPIHandle)
@@ -110,10 +115,10 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 	}
 
 	//feed tempreg_val to CR1 reg
-	pSPIHandle->pSPI->SPI_CR1 = tempreg_val;
+	pSPIHandle->pSPI->SPI_CR1 |= tempreg_val;
 
 	//enable SPI
-	SPI_Enable(pSPIHandle);
+	//SPI_Enable(pSPIHandle);
 
 }
 

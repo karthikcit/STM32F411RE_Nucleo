@@ -125,6 +125,10 @@ void SPI2_Init()
 	//INIT SPI
 	SPI_Init(&peri_spi2);
 
+	SPI_SSI_SET(SPI2);
+
+	SPI_Enable(SPI2);
+
 }
 
 int main(void)
@@ -193,19 +197,36 @@ int main(void)
 
 #endif
 
+/* 	SPI_Pclk_Control(SPI2,ENABLE);
+	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SSI_BPOS));
+	//SPI2->SPI_CR1 |=  1<<SPI_CR1_SSI_BPOS;
+	SPI_SSI_SET(SPI2);
+	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SSI_BPOS));
+
+	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SPE_BPOS));
+	SPI_Enable(SPI2);
+	//SPI2->SPI_CR1 |=  1<<SPI_CR1_SPE_BPOS;
+	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SPE_BPOS));
+	while(1);
+*/
+
 #if SPI_INIT
 	SPI2GPIO_Init();
 	SPI2_Init();
+	SPI_SSI_SET(SPI2);
+	SPI_Enable(SPI2);
 #endif
 
 #if SPI_TEST
-	char test_str[] = "hello world";
-	SPI_DataSend(SPI2,(uint8_t*)test_str,strlen(test_str));
+	uint8_t test_str[] = {0};
+	for(int i=0;i<32;i++)
+	{test_str[i]=i;}
+	SPI_DataSend(SPI2,test_str,32);
 	while(1);
 
 #endif
 
-#if 0
+#if 1
 	/* Infinit Loop */
 	while(1)
 	{
