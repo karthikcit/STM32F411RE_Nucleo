@@ -250,6 +250,83 @@ typedef struct
 #define SPI5 ((SPI_RegDef_t*)(SPI5_I2S5_BASEADDR))
 
 
+/* Peripheral Register Definition Structure for I2C */
+typedef struct
+{
+	volatile uint32_t I2C_CR1;		/* Offset 0x00 */
+	volatile uint32_t I2C_CR2;		/* Offset 0x04 */
+	volatile uint32_t I2C_OAR1;		/* Offset 0x08 */
+	volatile uint32_t I2C_OAR2;		/* Offset 0x0C */
+	volatile uint32_t I2C_DR;		/* Offset 0x10 */
+	volatile uint32_t I2C_SR1;		/* Offset 0x14 */
+	volatile uint32_t I2C_SR2;	 	/* Offset 0x18 */
+	volatile uint32_t I2C_CCR;		/* Offset 0x1c */
+	volatile uint32_t I2C_TRISE;	/* Offset 0x20 */
+	volatile uint32_t I2C_FLTR;		/* Offset 0x24 */
+}I2C_RegDef_t;
+
+/* MACROs for I2C (peripheral base addr typecasted to regdef structures) */
+#define I2C1 ((I2C_RegDef_t*)(I2C1_BASEADDR))
+#define I2C2 ((I2C_RegDef_t*)(I2C2_BASEADDR))
+#define I2C3 ((I2C_RegDef_t*)(I2C3_BASEADDR))
+
+
+/* Peripheral Register Definition Structure for USART */
+typedef struct
+{
+	volatile uint32_t USART_SR;		/* Offset 0x00 */
+	volatile uint32_t USART_DR;		/* Offset 0x04 */
+	volatile uint32_t USART_BRR;	/* Offset 0x08 */
+	volatile uint32_t USART_CR1;	/* Offset 0x0C */
+	volatile uint32_t USART_CR2;	/* Offset 0x10 */
+	volatile uint32_t USART_CR3;	/* Offset 0x14 */
+	volatile uint32_t USART_GTPR; 	/* Offset 0x18 */
+}USART_RegDef_t;
+
+
+/* MACROs for USART (peripheral base addr typecasted to regdef structures) */
+#define USART1 ((USART_RegDef_t*)(USART1_BASEADDR))
+#define USART2 ((USART_RegDef_t*)(USART2_BASEADDR))
+#define USART6 ((USART_RegDef_t*)(USART6_BASEADDR))
+
+
+/* Peripheral Register Definition Structure for ADC */
+typedef struct
+{
+	volatile uint32_t ADC_SR;		/* Offset 0x00 */
+	volatile uint32_t ADC_CR1;		/* Offset 0x04 */
+	volatile uint32_t ADC_CR2;		/* Offset 0x08 */
+	volatile uint32_t ADC_SMPR1;	/* Offset 0x0C */
+	volatile uint32_t ADC_SMPR2;	/* Offset 0x10 */
+	volatile uint32_t ADC_JOFR1;	/* Offset 0x14 */
+	volatile uint32_t ADC_JOFR2;	/* Offset 0x18 */
+	volatile uint32_t ADC_JOFR3;	/* Offset 0x1C */
+	volatile uint32_t ADC_JOFR4;	/* Offset 0x20 */
+	volatile uint32_t ADC_HTR;		/* Offset 0x24 */
+	volatile uint32_t ADC_LTR;		/* Offset 0x28 */
+	volatile uint32_t ADC_SQR1;		/* Offset 0x2C */
+	volatile uint32_t ADC_SQR2;		/* Offset 0x30 */
+	volatile uint32_t ADC_SQR3;		/* Offset 0x34 */
+	volatile uint32_t ADC_JSQR;		/* Offset 0x38 */
+	volatile uint32_t ADC_JDR1;		/* Offset 0x3C */
+	volatile uint32_t ADC_JDR2;		/* Offset 0x40 */
+	volatile uint32_t ADC_JDR3;		/* Offset 0x44 */
+	volatile uint32_t ADC_JDR4;		/* Offset 0x48 */
+	volatile uint32_t ADC_DR;		/* Offset 0x4C */
+
+}ADC_RegDef_t;
+
+/* MACROs for ADC (peripheral base addr typecasted to regdef structures) */
+#define ADC1 ((ADC_RegDef_t*)(ADC1_BASEADDR))
+
+typedef struct
+{
+	volatile uint32_t Res1;		/* Offset 0x00 */
+	volatile uint32_t ADC_CCR;	/* Offset 0x04 */
+}ADC_CCR_RegDef_t;
+
+#define ADC_CCR ((ADC_CCR_RegDef_t*)(ADC1_BASEADDR+0x300))
+
 /* Generic MACROs */
 #define ENABLE			1
 #define DISABLE			0
@@ -257,6 +334,9 @@ typedef struct
 #define RESET			DISABLE
 #define GPIO_PIN_SET 	SET
 #define GPIO_PIN_RESET 	RESET
+
+
+
 
 
 #include "rcc_clock.h"
