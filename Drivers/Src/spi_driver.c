@@ -74,6 +74,22 @@ void SPI_SSI_SET(SPI_RegDef_t *pSPI)
 	pSPI->SPI_CR1 |= SET << SPI_CR1_SSI_BPOS;
 }
 
+
+void SPI_SSOE_Enable(SPI_RegDef_t *pSPI)
+{
+	pSPI->SPI_CR2 |= SPI_CR2_SSOE;
+}
+
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPI , uint32_t FlagName)
+{
+	if(pSPI->SPI_SR & FlagName)
+	{
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
+
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
 	uint32_t tempreg_val=0;
@@ -99,7 +115,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 	if(pSPIHandle->pSPI_PinConfig.SPI_DeviceMode == SPI_BCFG_FD)
 	{
 		//clear BIDI MODE bit
-		tempreg_val |= ~(SET << SPI_CR1_BIDI_MODE_BPOS);
+		tempreg_val &= ~(SET << SPI_CR1_BIDI_MODE_BPOS);
 
 	}
 	else if(pSPIHandle->pSPI_PinConfig.SPI_DeviceMode == SPI_BCFG_HD)
@@ -110,7 +126,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 	else if(pSPIHandle->pSPI_PinConfig.SPI_DeviceMode == SPI_BCFG_SIMPLEX_RX)
 	{
 		//clear BIDI MODE bit
-		tempreg_val |= ~(SET << SPI_CR1_BIDI_MODE_BPOS);
+		tempreg_val &= ~(SET << SPI_CR1_BIDI_MODE_BPOS);
 		tempreg_val |= (SET << SPI_CR1_RX_ONLY_BPOS);  //rx only mode
 	}
 
@@ -129,6 +145,27 @@ void SPI_DeInit(SPI_RegDef_t *pSPI)
 }
 
 
+uint32_t SPI_RegRead_SR(SPI_RegDef_t *pSPI)
+{
+	uint32_t value=0;
+	value = pSPI->SPI_SR;
+	return value;
+
+}
+
+uint32_t SPI_RegRead_DR(SPI_RegDef_t *pSPI)
+{
+	uint32_t value=0;
+	value = pSPI->SPI_DR;
+	return value;
+
+}
+
+void SPI_RegWrite_SR(SPI_RegDef_t *pSPI,uint32_t value)
+{
+
+}
+
 /* Blocking or Polling */
 void SPI_DataSend(SPI_RegDef_t *pSPI,uint8_t *pTx_Buff,uint32_t Len)
 {
@@ -140,12 +177,11 @@ void SPI_DataSend(SPI_RegDef_t *pSPI,uint8_t *pTx_Buff,uint32_t Len)
 		if(((pSPI->SPI_CR1) & (1<<SPI_CR1_DFF_BPOS))  == SPI_DFF_8BIT)
 		{
 			//3. put data in DR
-			pSPI->SPI_DR = *(pTx_Buff);
+			pSPI->SPI_DR |= *(pTx_Buff);
 			//4. increament TX buff addr
 			pTx_Buff++;
 			//5. Decrement Len
 			Len--;
-
 		}
 		else if((pSPI->SPI_CR1 & (1<<SPI_CR1_DFF_BPOS))  == SPI_DFF_16BIT)
 		{
@@ -159,6 +195,48 @@ void SPI_DataSend(SPI_RegDef_t *pSPI,uint8_t *pTx_Buff,uint32_t Len)
 		}
 	}
 }
+
+/*********************************************************************
+ * @fn      		  - SPI_SendData
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -
+ *
+ * @Note              - This is blocking call
+
+ */
+void SPI_SendData(SPI_RegDef_t *pSPIx,uint8_t *pTxBuffer, uint32_t Len)
+{
+	while(Len > 0)
+	{
+		//1. wait until TXE is set
+		while(SPI_GetFlagStatus(pSPIx,SPI_SR_TXE_FLAG)  == FLAG_RESET );
+
+		//2. check the DFF bit in CR1
+		if( (pSPIx->SPI_CR1 & ( 1 << SPI_CR1_DFF_BPOS) ) )
+		{
+			//16 bit DFF
+			//1. load the data in to the DR
+			pSPIx->SPI_DR =   *((uint16_t*)pTxBuffer);
+			Len--;
+			Len--;
+			(uint16_t*)pTxBuffer++;
+		}else
+		{
+			//8 bit DFF
+			pSPIx->SPI_DR =   *pTxBuffer;
+			Len--;
+			pTxBuffer++;
+		}
+	}
+
+}
+
 
 /*
 void SPI_DataREceive(SPI_RegDef_t *pSPI,uint8_t *pRx_Buff,uint32_t Len)
@@ -177,11 +255,36 @@ void SPI_IRQ_ITPriority(uint8_t IRQNumber,uint32_t IRQPriority)
 
 }
 
+*/
 
 void SPI_IRQHandler(SPI_RegDef_t *pSPI)
 {
+	  uint32_t tmp1 = 0, tmp2 = 0;
+
+	/* check to see RXNE is set in the status register */
+	//tmp1 = (hspi->Instance->SR & SPI_REG_SR_RXNE_FLAG);
+	tmp1 = (pSPI->SPI_SR & SPI_SR_RXNE_FLAG);
+	/* check whether RXNEIE bit is enabled in the control register. */
+	//tmp2 = (hspi->Instance->CR2 & SPI_REG_CR2_RXNEIE_ENABLE);
+	tmp2 = (pSPI->SPI_CR2 & SPI_CR2_RXNEIE_ENABLE);
+	if((tmp1 != RESET) && (tmp2 != RESET) )
+	  {
+		//Rx int handle
+	  }
+	/* check to see TXE is set in the status register */
+	//tmp1 = (hspi->Instance->SR & SPI_REG_SR_TXE_FLAG);
+	tmp1 = (pSPI->SPI_SR & SPI_SR_TXE_FLAG);
+	//tmp2 = (hspi->Instance->CR2 & SPI_REG_CR2_TXEIE_ENABLE);
+	tmp2 = (pSPI->SPI_CR2 & SPI_CR2_TXEIE_ENABLE);
+
+	if((tmp1 != RESET) && (tmp2 != RESET))
+	{
+		/* TXE flag is set handle the TX of data bytes */
+	     //hal_spi_handle_tx_interrupt(hspi);
+	    return;
+	  }
 
 }
 
 
-*/
+

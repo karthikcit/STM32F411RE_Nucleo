@@ -80,7 +80,7 @@ void SPI2GPIO_Init()
 	SPI2_gpio.pGPIO_PinConfig.GPIO_PinMode = GPIO_PINMODE_ALTFN;
 	SPI2_gpio.pGPIO_PinConfig.GPIO_PinAltFunMode = 5;
 	SPI2_gpio.pGPIO_PinConfig.GPIO_PinSpeed = GPIO_OUTSPEED_FAST;
-	SPI2_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_NO_PUPD;
+	SPI2_gpio.pGPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPD_PU;//GPIO_PUPD_NO_PUPD;
 	SPI2_gpio.pGPIO_PinConfig.GPIO_PinOPType = GPIO_OT_PUSHPULL;
 
 	/* Enable Peripheral Clock*/
@@ -113,11 +113,11 @@ void SPI2_Init()
 	//SPI 2 as master
 	peri_spi2.pSPI_PinConfig.SPI_BusConfig = SPI_BCFG_FD;
 	peri_spi2.pSPI_PinConfig.SPI_DeviceMode = SPI_DEV_MODE_MASTER;
-	peri_spi2.pSPI_PinConfig.SPI_ClkSpeed = SPI_PCLK_DIV2;  //Fclk/2
-	peri_spi2.pSPI_PinConfig.SPI_DFF = SPI_DFF_8BIT;
+	peri_spi2.pSPI_PinConfig.SPI_ClkSpeed = SPI_PCLK_DIV4;  //Fclk/2
+	peri_spi2.pSPI_PinConfig.SPI_DFF = SPI_DFF_16BIT;
 	peri_spi2.pSPI_PinConfig.SPI_SSM = SPI_SSM_ENA;
-	peri_spi2.pSPI_PinConfig.SPI_CPHA = SPI_CPHA_ZERO;
-	peri_spi2.pSPI_PinConfig.SPI_CPOL = SPI_CPOL_ZERO;
+	peri_spi2.pSPI_PinConfig.SPI_CPHA = SPI_CPHA_ONE;
+	peri_spi2.pSPI_PinConfig.SPI_CPOL = SPI_CPHA_ONE;
 
 	//enable pclk
 	SPI_Pclk_Control(SPI2,ENABLE);
@@ -197,36 +197,29 @@ int main(void)
 
 #endif
 
-/* 	SPI_Pclk_Control(SPI2,ENABLE);
-	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SSI_BPOS));
-	//SPI2->SPI_CR1 |=  1<<SPI_CR1_SSI_BPOS;
-	SPI_SSI_SET(SPI2);
-	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SSI_BPOS));
-
-	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SPE_BPOS));
-	SPI_Enable(SPI2);
-	//SPI2->SPI_CR1 |=  1<<SPI_CR1_SPE_BPOS;
-	printf(" %d \n ",(SPI2->SPI_CR1) & (1<<SPI_CR1_SPE_BPOS));
-	while(1);
-*/
 
 #if SPI_INIT
 	SPI2GPIO_Init();
 	SPI2_Init();
-	SPI_SSI_SET(SPI2);
-	SPI_Enable(SPI2);
 #endif
 
 #if SPI_TEST
-	uint8_t test_str[] = {0};
-	for(int i=0;i<32;i++)
-	{test_str[i]=i;}
-	SPI_DataSend(SPI2,test_str,32);
-	while(1);
+	uint8_t test_str[32] = {0};
+	uint8_t i=0;
+	memset(&test_str,7,32);
+	for(i=0;i<32;i++)
+	{
+		printf(" %d \n ",test_str[i]);
+	}
+
+	while(1)
+	{
+		SPI_DataSend(SPI2,test_str,32);
+	}
+	//while(1);
 
 #endif
 
-#if 1
 	/* Infinit Loop */
 	while(1)
 	{
@@ -282,7 +275,6 @@ int main(void)
 #endif
 
 	}//end of while(1)
-#endif//disable While(1) infiniite loop
 
 	return 0;
 }//end of main

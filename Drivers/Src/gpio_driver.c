@@ -162,7 +162,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 	{
 		//AFRH
 		temp = (pGPIOHandle->pGPIO_PinConfig.GPIO_PinAltFunMode)<<(4 * temp2);
-		pGPIOHandle->pGPIO->GPIOx_AFRH &= (~(0xF))<<(4 * temp2);
+		pGPIOHandle->pGPIO->GPIOx_AFRH &= ~((0xF)<<(4 * temp2));
 		pGPIOHandle->pGPIO->GPIOx_AFRH |= temp ;
 	}
 	temp = 0;

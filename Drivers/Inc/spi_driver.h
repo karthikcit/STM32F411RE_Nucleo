@@ -100,6 +100,29 @@ typedef struct
 #define SPI_CR1_BIDI_MODE_BPOS	15
 
 
+/*******************  Bit definition for SPI_CR2 register  ********************/
+#define SPI_CR2_TXEIE_ENABLE    		( ( uint32_t) 1 << 7)
+#define SPI_CR2_RXNEIE_ENABLE    		( ( uint32_t) 1 << 6)
+#define SPI_CR2_ERRIE_ENABLE    		( ( uint32_t) 1 << 5)
+
+#define SPI_CR2_FRAME_FORMAT			( ( uint32_t) 1 << 4)
+#define SPI_MOTOROLA_MODE       			0  //for frame format
+#define SPI_TI_MODE             			1  //for frame format
+#define SPI_CR2_SSOE   					( ( uint32_t) 1 << 2)
+#define SPI_CR2_TXDMA_EN				( ( uint32_t) 1 << 1)
+#define SPI_CR2_RXDMA_EN				( ( uint32_t) 1 << 0)
+
+/*******************  Bit definition for SPI_SR register  ********************/
+#define SPI_SR_FRE_FLAG			( ( uint32_t) 1 << 8)
+#define SPI_SR_BUSY_FLAG        ( ( uint32_t) 1 << 7)
+#define SPI_SR_OVR_FLAG			( ( uint32_t) 1 << 6)
+#define SPI_SR_MODF_FLAG		( ( uint32_t) 1 << 5)
+#define SPI_SR_CRCER_FLAG		( ( uint32_t) 1 << 4)
+#define SPI_SR_UDR_FLAG			( ( uint32_t) 1 << 3)
+#define SPI_SR_TXE_FLAG        	( ( uint32_t) 1 << 1)
+#define SPI_SR_RXNE_FLAG        ( ( uint32_t) 1 << 0)
+
+
 
 void SPI_Pclk_Control(SPI_RegDef_t *pSPI,uint8_t ENorDIS);
 
@@ -115,5 +138,10 @@ void SPI_IRQ_Interrupt_Config(uint8_t IRQNumber,uint8_t ENorDIS);
 void SPI_IRQ_ITPriority(uint8_t IRQNumber,uint32_t IRQPriority);
 void SPI_IRQHandler(SPI_RegDef_t *pSPI);
 
+void SPI_SSI_SET(SPI_RegDef_t *pSPI);
+void SPI_Enable(SPI_RegDef_t *pSPI);
+
+uint32_t SPI_RegRead_SR(SPI_RegDef_t *pSPI);
+uint32_t SPI_RegRead_DR(SPI_RegDef_t *pSPI);
 
 #endif /* INC_SPI_DRIVER_H_ */
