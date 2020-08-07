@@ -57,8 +57,48 @@ RCC_RegDef_t *pRCC = RCC;
 #define SPI4_PCLK_DIS()	(pRCC->RCC_APB2ENR &= (RESET<<13))
 #define SPI5_PCLK_DIS()	(pRCC->RCC_APB2ENR &= (RESET<<20))
 
+#else
+void GPIOA_PCLK_EN(void);
+void GPIOB_PCLK_EN(void);
+void GPIOC_PCLK_EN(void);
+void GPIOD_PCLK_EN(void);
+void GPIOE_PCLK_EN(void);
+void GPIOH_PCLK_EN(void);
+
+void GPIOA_PCLK_DIS(void);
+void GPIOB_PCLK_DIS(void);
+void GPIOC_PCLK_DIS(void);
+void GPIOD_PCLK_DIS(void);
+void GPIOE_PCLK_DIS(void);
+void GPIOH_PCLK_DIS(void);
+
+/* SYSCFG Peripheral Clock Enable Functions*/
+void SYSCFG_PCLK_EN(void);
+
+
+/* SPI Peripheral Clock Enable Functions*/
+void SPI1_PCLK_EN(void);
+void SPI2_PCLK_EN(void);
+void SPI3_PCLK_EN(void);
+void SPI4_PCLK_EN(void);
+void SPI5_PCLK_EN(void);
+
+/* SPI Peripheral Clock Disable Functions*/
+void SPI1_PCLK_DIS(void);
+void SPI2_PCLK_DIS(void);
+void SPI3_PCLK_DIS(void);
+void SPI4_PCLK_DIS(void);
+void SPI5_PCLK_DIS(void);
+
+/* USART Pclk Enable  */
+void USART1_PCLK_EN(void);
+void USART6_PCLK_EN(void);
+void USART2_PCLK_EN(void);
+
+/* USART Pclk Disable  */
+void USART1_PCLK_DIS(void);
+void USART6_PCLK_DIS(void);
+void USART2_PCLK_DIS(void);
+
 #endif
-
-
-
 #endif /* INC_RCC_CLOCK_H_ */

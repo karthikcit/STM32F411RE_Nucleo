@@ -107,6 +107,26 @@ typedef struct
 #define GPIO_OT_OPENDRAIN	1
 
 
+/* MACRO for GPIO Alternative Functions */
+#define GPIO_AF_0		0
+#define GPIO_AF_1		1
+#define GPIO_AF_2		2
+#define GPIO_AF_3		3
+#define GPIO_AF_4		4
+#define GPIO_AF_5		5
+#define GPIO_AF_6		6
+#define GPIO_AF_7		7
+#define GPIO_AF_8		8
+#define GPIO_AF_9		9
+#define GPIO_AF_10	 	10
+#define GPIO_AF_11	 	11
+#define GPIO_AF_12	 	12
+#define GPIO_AF_13	 	13
+#define GPIO_AF_14	 	14
+#define GPIO_AF_15	 	15
+
+
+
 /* Function Prototypes  */
 /*
  * for clk enable

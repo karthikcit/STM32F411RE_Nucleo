@@ -193,4 +193,38 @@ void SPI5_PCLK_DIS(void)
 	(pRCC->RCC_APB2ENR &= (RESET<<20));
 }
 
+
+/* USART Pclk Enable  */
+void USART1_PCLK_EN(void)
+{
+	(pRCC->RCC_APB2ENR |= (SET<<4));
+}
+void USART6_PCLK_EN(void)
+{
+	(pRCC->RCC_APB2ENR |= (SET<<5));
+}
+
+void USART2_PCLK_EN(void)
+{
+	(pRCC->RCC_APB1ENR |= (SET<<17));
+}
+
+
+
+/* USART Pclk Disable  */
+void USART1_PCLK_DIS(void)
+{
+	(pRCC->RCC_APB2ENR &= (RESET<<4));
+}
+void USART6_PCLK_DIS(void)
+{
+	(pRCC->RCC_APB2ENR &= (RESET<<5));
+}
+
+void USART2_PCLK_DIS(void)
+{
+	(pRCC->RCC_APB1ENR &= (RESET<<17));
+}
+
+
 #endif
